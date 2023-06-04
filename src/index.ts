@@ -1,15 +1,15 @@
 import { camelTo, kebabTo, pascalTo, snakeTo } from './mappers';
-import { CaseMapper, Cases } from './types';
+import { CaseMapper, Cases, McGillTo } from './types';
 
 const mcgill = (input: string) => {
-  const buildTo = (caseMapper: CaseMapper): Record<Cases, () => string> =>
+  const buildTo = (caseMapper: CaseMapper): McGillTo =>
     Object.values(Cases).reduce(
       (acc, stringCase) => ({
         ...acc,
         [stringCase]: () => caseMapper[stringCase](input),
       }),
       {}
-    ) as Record<Cases, () => string>;
+    ) as McGillTo;
 
   const buildFrom = (caseMapper: CaseMapper) => () => ({
     to: buildTo(caseMapper),
