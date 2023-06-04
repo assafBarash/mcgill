@@ -1,7 +1,4 @@
-import { camelTo } from './mappers/camel';
-import { kebabTo } from './mappers/kebab';
-import { pascalTo } from './mappers/pascal';
-import { snakeTo } from './mappers/snake';
+import { camelTo, kebabTo, pascalTo, snakeTo } from './mappers';
 import { CaseMapper, Cases } from './types';
 
 const mcgill = (input: string) => {
