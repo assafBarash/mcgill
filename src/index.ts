@@ -2,26 +2,29 @@ import { camelTo } from './mappers/camel';
 import { kebabTo } from './mappers/kebab';
 import { pascalTo } from './mappers/pascal';
 import { snakeTo } from './mappers/snake';
-import { CaseMapper } from './types';
+import { CaseMapper, Cases } from './types';
 
 const mcgill = (input: string) => {
-  let from: CaseMapper = getDefaultCaseMapper(input);
-  const setFrom = (mapper: CaseMapper) => () => {
-    from = mapper;
-  };
+  const buildTo = (caseMapper: CaseMapper): Record<Cases, () => string> =>
+    Object.values(Cases).reduce(
+      (acc, stringCase) => ({
+        ...acc,
+        [stringCase]: () => caseMapper[stringCase](input),
+      }),
+      {}
+    ) as Record<Cases, () => string>;
+
+  const buildFrom = (caseMapper: CaseMapper) => () => ({
+    to: buildTo(caseMapper),
+  });
 
   return {
-    to: {
-      pascal: () => from.pascal(input),
-      camel: () => from.camel(input),
-      snake: () => from.snake(input),
-      kebab: () => from.kebab(input),
-    },
+    to: buildTo(getDefaultCaseMapper(input)),
     from: {
-      pascal: () => setFrom(pascalTo),
-      camel: () => setFrom(camelTo),
-      snake: () => setFrom(snakeTo),
-      kebab: () => setFrom(kebabTo),
+      pascal: buildFrom(pascalTo),
+      camel: buildFrom(camelTo),
+      snake: buildFrom(snakeTo),
+      kebab: buildFrom(kebabTo),
     },
   };
 };
